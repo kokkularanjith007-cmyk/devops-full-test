@@ -15,11 +15,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build backend image
-      run: docker build -t indore-backend ./backend
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/indore-backend ./backend
+
+    - name: Push backend image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/indore-backend
 
     - name: Build frontend image
-      run: docker build -t indore-frontend ./frontend
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/indore-frontend ./frontend
+
+    - name: Push frontend image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/indore-frontend
