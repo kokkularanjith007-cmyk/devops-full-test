@@ -1,6 +1,20 @@
+# Stage 1: Build frontend
+FROM node:20-alpine as builder
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# Stage 2: Serve using Nginx
 FROM nginx:alpine
 
-COPY dist /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
 
